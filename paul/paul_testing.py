@@ -1,4 +1,7 @@
-from time import time, ctime, sleep
+# API for testing the controller without using Raspberry Pi/ Webots used to define Paul class
+# Python 2 (But should be simple to convert to Python 3 -  Just change the print statement syntax)
+
+from time import ctime
 class Paul(object):
     def __init__(self):
         # Name of the controller
@@ -16,7 +19,8 @@ class Paul(object):
         # Threshold reading on  distance sensors before triggering
         self.bottom_threshold = 10
 
-        # Note: The following are not needed for non-testing controllers
+        # Note: The following should only be set if distance sensors are not attached
+        # they should be set to 0 if sensors are attached.
         self.top_ds_reading = 20
         self.bottom_ds_reading = 20
 
@@ -28,6 +32,7 @@ class Paul(object):
 
     def stop_motors(self):
         print 'Stopping motors...'
+        self.speed = 0
 
 # Motors and Sensors Readings
     def display_all_readings(self):
@@ -44,7 +49,7 @@ class Paul(object):
         return self.speed
 
     def display_top_ds_reading(self):
-        print "Top DS Reading:" + str(self.top_ds_reading)
+        print "Top DS Reading: " + str(self.top_ds_reading)
 
     def get_top_ds_reading(self):
         return self.top_ds_reading

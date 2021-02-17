@@ -1,3 +1,6 @@
+# API for Raspberry Pi Controller used to define Paul class
+# Python 2 (Requirement for Motor Controllers)
+
 from motors import Motors
 
 class Paul(object):
@@ -7,9 +10,9 @@ class Paul(object):
         
         # Current Speed of the robot
         self.speed = 0
-        # Speed that the robot will travel up
+        # Speed that the robot will travel up (note negative speed goes up)
         self.up_speed = -100
-        #Speed that the robot will travel down
+        #Speed that the robot will travel down (note negative speed goes down)
         self.down_speed = 100
         
         # Threshold reading on top distance sensors before triggering
@@ -17,10 +20,12 @@ class Paul(object):
         # Threshold reading on bottom distance sensors before triggering
         self.bottom_threshold = 10
         
-        #Note: The following are not needed for non-testing controllers
+        # Note: The following should only be set if distance sensors are not attached,
+        # they should be set to 0 if sensors are attached.
         self.top_ds_reading = 20
         self.bottom_ds_reading = 20
 
+        # Create an instance of the Motors class used in SDP
         self.mc = Motors()
 
 
@@ -35,6 +40,7 @@ class Paul(object):
 
     def stop_motors(self):
         print 'Stopping motors...'
+        self.speed = 0
         self.mc.stop_motors()
 
 
@@ -49,6 +55,8 @@ class Paul(object):
         self.mc.print_encoder_data()
     
     def get_motor_readings(self):
+        #mc.read_encoder(id)
+        #where id is the port number on the encoder board that you wish to read
         return self.speed
     
     def display_top_ds_reading(self):
