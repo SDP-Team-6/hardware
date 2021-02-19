@@ -32,11 +32,11 @@ class Paul(object):
 # Movement Functions  
 
     def start_motors(self,speed):
+        motor_ids = [5,4,3,2,1,0]
         self.speed = speed
         print 'Starting motors...'
-        self.mc.move_motor(2,self.speed)
-        self.mc.move_motor(1,self.speed)
-        self.mc.move_motor(0,self.speed)
+        for motor_id in motor_ids:
+            self.mc.move_motor(motor_id,self.speed)
 
     def stop_motors(self):
         print 'Stopping motors...'
@@ -58,12 +58,19 @@ class Paul(object):
         #mc.read_encoder(id)
         #where id is the port number on the encoder board that you wish to read
         return self.speed
-    
+
+    def check_top_ds_reading(self):
+        return False 
+
     def display_top_ds_reading(self):
         print "Top DS Reading: --"
+    
 
     def get_top_ds_reading(self):
         return self.top_ds_reading
+    
+    def check_bottom_ds_reading(self):
+        return False 
 
     def display_bottom_ds_reading(self):
         print "Bottom DS Reading: --" 

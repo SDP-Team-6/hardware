@@ -67,6 +67,12 @@ class Paul(object):
         # TODO Code goes below here
         return self.speed
 
+    # Function to check if the top distance sensor reading is within the threshold to trigger a change in direction
+    # Returns True if the distance should change
+    # Returns False if the distance is not within the threshold
+    def check_top_ds_reading(self):
+        return paul.get_top_ds_reading() < paul.get_top_threshold()
+
     # Function to display any readings from the top distance sensor
     # Note: Not essential - can be left unchanged if not needed
     def display_top_ds_reading(self):
@@ -77,6 +83,12 @@ class Paul(object):
     def get_top_ds_reading(self):
         # TODO Code goes below here
         return self.top_ds_reading
+    
+    # Function to check if the top distance sensor reading is within the threshold to trigger a change in direction
+    # Returns True if the distance should change
+    # Returns False if the distance is not within the threshold
+    def check_bottom_ds_reading(self):
+        return paul.get_bottom_ds_reading() < paul.get_bottom_threshold()
     
     # Function to display any readings from the bottom distance sensor
     # Note: Not essential - can be left unchanged if not needed

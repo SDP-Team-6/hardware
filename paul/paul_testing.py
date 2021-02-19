@@ -48,11 +48,17 @@ class Paul(object):
     def get_motor_readings(self):
         return self.speed
 
+    def check_top_ds_reading(self):
+        return False 
+
     def display_top_ds_reading(self):
         print "Top DS Reading: " + str(self.top_ds_reading)
 
     def get_top_ds_reading(self):
         return self.top_ds_reading
+
+    def check_bottom_ds_reading(self):
+        return False 
 
     def display_bottom_ds_reading(self):
         print "Bottom DS Reading: " + str(self.bottom_ds_reading)

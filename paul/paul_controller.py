@@ -42,7 +42,7 @@ while(running and time() < start_time + run_time):
         # If the robot is moving up the pole
         if going_up:
             # Check that the robot has gone past the distance sensor stopping threshold
-            if paul.get_top_ds_reading() < paul.get_top_threshold():
+            if paul.check_top_ds_reading():
                 # If the robot has reached the ceiling the move the robot down
                 goingUp = False
                 paul.stop_motors()
@@ -50,7 +50,7 @@ while(running and time() < start_time + run_time):
     
         # If the robot is moving down the pole
         elif not going_up:
-            if paul.get_bottom_ds_reading() < paul.get_bottom_threshold():
+            if paul.check_bottom_ds_reading():
                 # If the robot has reached the floor then move the robot back up
                 goingUp = True
                 paul.stop_motors()
