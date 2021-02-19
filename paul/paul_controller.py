@@ -66,8 +66,9 @@ while(running and time() < start_time + run_time):
     # Catch any exceptions that occure during execution 
     # these may affect the motors and lead to an unexpected termination of the loop
     # A I/O error can occur during while using the Raspberry Pi API (This is unavoidable and should be handled)
-    except Exception, e:
-        print str(e)
+    except Exception as e:
+        # Note: Below print statement will only work in Python2 
+        #print str(e)
         # Stop and restart the motors if an error occurs
         paul.stop_motors()
         paul.start_motors(paul.get_speed())
