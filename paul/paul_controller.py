@@ -15,7 +15,7 @@ paul = Paul()
 # Use a sleep of at least 0.1, to avoid errors (This applies to Hardware implementations)
 time_step = 0.2
 # Max run time of the robot before termination (in seconds)
-run_time = 10
+run_time = 100
 
 # Used to stop the robot before the time is finished
 running = True
