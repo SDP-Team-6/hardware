@@ -37,12 +37,12 @@ class Paul(object):
             self.wheels[i].setVelocity(0.0)  # unit: rad/s
 
         # initialise distance sensors
-        self.ds_top = self.robot.getDevice('ds_top')
-        self.ds_bottom = self.robot.getDevice('ds_bottom')
-        self.ds_top.enable(self.timestep)
-        self.ds_bottom.enable(self.timestep)
+        self.top_ds = self.robot.getDevice('ds_top')
+        self.bottom_ds = self.robot.getDevice('ds_bottom')
+        self.top_ds.enable(self.timestep)
+        self.bottom_ds.enable(self.timestep)
         # initialise LED
-        # self.uv_led = self.robot.getDevice('uv_led')
+        self.uv_led = self.robot.getDevice('uv_led')
 
     # Movement Functions
     # Function to start the robot moving at a speed defined in the speed parameter
@@ -87,7 +87,7 @@ class Paul(object):
 
     # Function to display get readings from the top distance sensor
     def get_top_ds_reading(self):
-        return self.ds_top.getValue()
+        return self.top_ds.getValue()
 
     # Function to check if the top distance sensor reading is within the threshold to trigger a change in direction
     # Returns True if the distance should change
@@ -101,7 +101,13 @@ class Paul(object):
 
     # Function to display get readings from the bottom distance sensor
     def get_bottom_ds_reading(self):
-        return self.ds_bottom.getValue()
+        return self.bottom_ds.getValue()
+
+    def turn_uv_on(self):
+        self.uv_led.set(255)
+
+    def turn_uv_off(self):
+        self.uv_led.set(0)
 
     # Getters and Setters
     def get_name(self):
@@ -139,55 +145,3 @@ class Paul(object):
 
     def set_bottom_threshold(self, bottom_threshold):
         self.bottom_threshold = bottom_threshold
-
-    # Run
-
-    # Changing arguments mid execution is what's neccessary here in order to allow execution
-    # although I think the inclusion of this function in this file and not in paul_controller
-    # probably undermines a good part of the intended functionality. Though I'm not entirely sure
-    # how to do otherwise, I have a branch in the sim repo where I have thus far attempted it unsuccessfully.
-    # It may be possible than because of how webots is organised this inclusion is neccessary, so I've fixed some small
-    # bugs.
-    def run(self, display, going_up, running, time_step, start_time, run_time):
-        climbing = going_up
-        while self.robot.step(self.timestep) != -1:
-            try:
-                # If the display option is enabled display all readings as defined in the API
-                if True:
-                    self.display_top_ds_reading()
-                    self.display_bottom_ds_reading()
-
-                # If the robot is moving up the pole
-                if climbing:
-                    # Check that the robot has gone past the distance sensor stopping threshold
-                    if self.check_top_ds_reading():
-                        # If the robot has reached the ceiling the move the robot down
-                        climbing = False
-                        self.stop_motors()
-                        self.start_motors(self.get_down_speed())
-
-                # If the robot is moving down the pole
-                elif not climbing:
-                    if self.check_bottom_ds_reading():
-                        # If the robot has reached the floor then move the robot back up
-                        climbing = True
-                        self.stop_motors()
-                        self.start_motors(self.get_up_speed())
-                else:
-                    # If there the robot is not moving up or down then there is an issue and the code should be
-                    # terminated
-                    self.stop_motors()
-
-            # Catch any exceptions that occur during execution
-            # these may affect the motors and lead to an unexpected termination of the loop
-            # A I/O error can occur during while using the Raspberry Pi API (This is unavoidable and should be handled)
-
-            except Exception as e:
-                # Note: Below print statement will only work in Python2
-                # print str(e)
-                # Stop and restart the motors if an error occurs
-                self.stop_motors()
-
-                # I've just put 5 here for now, getting the speed won't work because it has just been stopped
-                # TODO: Figure out we want to do here
-                self.start_motors(5)
