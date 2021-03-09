@@ -74,4 +74,4 @@ while(running and time() < start_time + run_time):
         paul.start_motors(paul.get_speed())
 
 # Tidy up - code to be executed before the script terminates
-paul.stop_motors()
+paul.paul_tidy()
