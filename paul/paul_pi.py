@@ -6,24 +6,26 @@ from Phidget22.Devices.VoltageInput import *
 from Phidget22.Devices.DigitalOutput import *
 import time
 from motors import Motors
+from rpi_ws281x import Color
+from grove.grove_ws2813_rgb_led_strip import GroveWS2813RgbStrip
 
 class Paul(object):
     def __init__(self):
         # Name of the controller
         self.name = "PAUL controller for Raspberry Pi"
-        
+
         # Current Speed of the robot
         self.speed = 0
         # Speed that the robot will travel up (note negative speed goes up)
-        self.up_speed = -100
+        self.up_speed = -70
         #Speed that the robot will travel down (note negative speed goes down)
-        self.down_speed = 100
-        
+        self.down_speed = 70
+
         # Threshold reading on top distance sensors before triggering
         self.top_threshold = 2.184
         # Threshold reading on bottom distance sensors before triggering
         self.bottom_threshold = 2.184
-        
+
         # Note: The following should only be set if distance sensors are not attached,
         # they should be set to 0 if sensors are attached.
         self.top_ds_reading = 0
@@ -53,7 +55,16 @@ class Paul(object):
             self.ir_sensors[i].openWaitForAttachment(5000)
 
 
-# Movement Functions  
+        #Light
+        # connect to pin 12(slot PWM)
+        PIN = 18
+        # For Grove - WS2813 RGB LED Strip Waterproof - 30 LED/m
+        # there is 30 RGB LEDs.
+        COUNT = 60
+        self.strip = GroveWS2813RgbStrip(PIN, COUNT)
+
+
+# Movement Functions
 
     def start_motors(self,speed_input):
         #If speed_input is an int then the speeds of all the motors should be the same
@@ -88,49 +99,53 @@ class Paul(object):
         self.display_top_ds_reading()
         self.display_bottom_ds_reading()
         print ""
-    
+
     def display_motor_readings(self):
         self.mc.print_encoder_data()
-    
+
     def get_motor_readings(self):
         #mc.read_encoder(id)
         #where id is the port number on the encoder board that you wish to read
         return self.speed
 
-    #Returns true if the top distance sensors are within range of the top 
+    #Returns true if the top distance sensors are within range of the top
     #Returns false otherwise
     def check_top_ds_reading(self):
         #Set the top distance sensor reading to the average of the three IR sensors on the top
         self.top_ds_reading = (self.ir_sensors[0].getVoltage() + self.ir_sensors[1].getVoltage() + self.ir_sensors[2].getVoltage())/3
         #If the voltage of the ir sensors is above a threshold then return true
         if(self.top_ds_reading >= self.top_threshold):
+            print "Top ir threshold exceeded"
             return True
         #If any of the top bumper sensors have been activated then return true
         if(self.bump_sensors[0].getState() == 1 or self.bump_sensors[1].getState() == 1 or self.bump_sensors[2].getState() == 1):
+            print "Top bump sensor triggered"
             return True
         #Else return false
-        return False 
+        return False
 
     def display_top_ds_reading(self):
         print "Top DS Reading: " + str(self.top_ds_reading)
-    
+
 
     def get_top_ds_reading(self):
         return self.top_ds_reading
-    
-    #Returns true if the top distance sensors are within range of the top 
+
+    #Returns true if the top distance sensors are within range of the top
     #Returns false otherwise
     def check_bottom_ds_reading(self):
         #Set the bottom distance sensor reading to the average of the three IR sensors on the bottom
-        self.bottom_ds_reading = (self.ir_sensors[3].getVoltage() + self.ir_sensors[4].getVoltage() + self.ir_sensors[5].getVoltage())/3
+        self.bottom_ds_reading = (self.ir_sensors[3].getVoltage() + self.ir_sensors[4].getVoltage() + self.ir_sensors[5].getVoltage/3
         #If the voltage of the ir sensors is above a threshold then return true
         if(self.bottom_ds_reading >= self.bottom_threshold):
+            print "Bottom ir threshold exceeded"
             return True
         #If any of the bottom bumper sensors have been activated then return true
         if(self.bump_sensors[3].getState() == 1 or self.bump_sensors[4].getState() == 1 or self.bump_sensors[5].getState() == 1):
+            print "Bottom bump sensor triggered"
             return True
         #Else return false
-        return False 
+        return False
 
     def display_bottom_ds_reading(self):
         print "Bottom DS Reading: " + str(self.bottom_ds_reading)
@@ -138,22 +153,34 @@ class Paul(object):
     def get_bottom_ds_reading(self):
         return self.bottom_ds_reading
 
+# Light functions
+    def light_on(self):
+        for i in range(self.strip.numPixels()):
+            self.strip.setPixelColor(i, Color(62,6,148))
+            self.strip.show()
+
+    def light_off(self):
+        for i in range(self.strip.numPixels()):
+            self.strip.setPixelColor(i, Color(0,0,0))
+            self.strip.show()
+
 
 # Terminate script
     def paul_tidy(self):
         #Stop the motors
         self.stop_motors()
-        
+        self.light_off()
+
         #Keyboard inerrupt may be needed to reset phidget
-        #try:
-        #    input("Press Enter to Stop\n")
-        #except (Exception, KeyboardInterrupt):
-        #    pass
+        try:
+            input("Press Enter to Stop\n")
+        except (Exception, KeyboardInterrupt):
+            pass
 
         #Close all the channels
         for i in range (0, 6):
             self.ir_sensors[i].close()
-            self.bump_sensorss[i].close()
+            self.bump_sensors[i].close()
 
 
 
@@ -161,31 +188,31 @@ class Paul(object):
 
     def get_name(self):
         return self.name
-    
+
     def set_speed(self,name):
         self.name = name
 
     def get_speed(self):
         return self.speed
-    
+
     def set_speed(self,speed):
         self.speed = speed
-    
+
     def get_up_speed(self):
         return self.up_speed
-    
+
     def set_up_speed(self,up_speed):
         self.up_speed = up_speed
-    
+
     def get_down_speed(self):
         return self.down_speed
-    
+
     def set_down_speed(self,up_speed):
         self.down_speed = up_speed
 
     def get_top_threshold(self):
         return self.top_threshold
-    
+
     def set_top_threshold(self,top_threshold):
         self.top_threshold = top_threshold
 

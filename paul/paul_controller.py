@@ -3,7 +3,7 @@
 
 # Import the API that should be used by the controller
 # Syntax: from <api_file_name> import paul
-from paul_testing import Paul
+from paul_pi import Paul
 
 # Import time library
 from time import time, sleep
@@ -32,20 +32,20 @@ start_time = time()
 # Start the robot moving up the pole
 paul.start_motors(paul.get_up_speed())
 
+#Turn the light on
+paul.light_on()
 # Keep running the robot until it should stop or exceeds the run time
 while(running and time() < start_time + run_time):
     try:
         # If the display option is enabled display all readings as defined in the API
         if(display):
             paul.display_all_readings()
-
         # If the robot is moving up the pole
         if going_up:
             # Check that the robot has gone past the distance sensor stopping threshold
             if paul.check_top_ds_reading():
                 # If the robot has reached the ceiling the move the robot down
                 goingUp = False
-                paul.stop_motors()
                 paul.start_motors(paul.get_down_speed())
     
         # If the robot is moving down the pole
@@ -53,7 +53,6 @@ while(running and time() < start_time + run_time):
             if paul.check_bottom_ds_reading():
                 # If the robot has reached the floor then move the robot back up
                 goingUp = True
-                paul.stop_motors()
                 paul.start_motors(paul.get_up_speed())
         else:
             # If there the robot is not moving up or down then there is an issue and the code should be terminated
@@ -70,7 +69,6 @@ while(running and time() < start_time + run_time):
         # Note: Below print statement will only work in Python2 
         #print str(e)
         # Stop and restart the motors if an error occurs
-        paul.stop_motors()
         paul.start_motors(paul.get_speed())
 
 # Tidy up - code to be executed before the script terminates
