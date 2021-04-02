@@ -25,10 +25,24 @@ class Paul(object):
         self.bottom_ds_reading = 20
 
 # Movement Functions   
-    
-    def start_motors(self,speed):
+    def start_motors(self,speed_input):
+        #If speed_input is an int then the speeds of all the motors should be the same
+        if type(speed_input) is int:
+            speeds = [speed_input, speed_input, speed_input, speed_input, speed_input, speed_input]
+            self.speed = speed_input
+        #If speed_input is a list then the speeds should be set different, set speed to a non int value to disable changing speed on that motor
+        elif type(speed_input) is list:
+            speeds = speed_input
+        #If list is not valid then set speeds to the current speed
+        else:
+            speeds = [self.speed, self.speed, self.speed, self.speed, self.speed, self.speed]
+        for i in range(len(speeds)):
+            if type(speeds[i]) is not int:
+                speeds[i] = 'x'
         print 'Starting motors...'
-        self.speed = speed
+        print speeds
+
+
 
     def stop_motors(self):
         print 'Stopping motors...'

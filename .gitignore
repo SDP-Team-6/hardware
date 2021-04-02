@@ -127,4 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-paul/misc/*
+examples/sensors1.py.jpg
+*.jpg
+examples/ssh.py

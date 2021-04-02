@@ -22,9 +22,9 @@ class Paul(object):
         self.down_speed = 70
 
         # Threshold reading on top distance sensors before triggering
-        self.top_threshold = 2.184
+        self.top_threshold = 1.9
         # Threshold reading on bottom distance sensors before triggering
-        self.bottom_threshold = 2.184
+        self.bottom_threshold = 2.6
 
         # Note: The following should only be set if distance sensors are not attached,
         # they should be set to 0 if sensors are attached.
@@ -111,10 +111,8 @@ class Paul(object):
     #Returns true if the top distance sensors are within range of the top
     #Returns false otherwise
     def check_top_ds_reading(self):
-        #Set the top distance sensor reading to the average of the three IR sensors on the top
-        self.top_ds_reading = (self.ir_sensors[0].getVoltage() + self.ir_sensors[1].getVoltage() + self.ir_sensors[2].getVoltage())/3
         #If the voltage of the ir sensors is above a threshold then return true
-        if(self.top_ds_reading >= self.top_threshold):
+        if(self.ir_sensors[0].getVoltage() >= self.top_threshold or self.ir_sensors[1].getVoltage() >= self.top_threshold or self.ir_sensors[2].getVoltage() >= self.top_threshold):
             print "Top ir threshold exceeded"
             return True
         #If any of the top bumper sensors have been activated then return true
@@ -134,10 +132,8 @@ class Paul(object):
     #Returns true if the top distance sensors are within range of the top
     #Returns false otherwise
     def check_bottom_ds_reading(self):
-        #Set the bottom distance sensor reading to the average of the three IR sensors on the bottom
-        self.bottom_ds_reading = (self.ir_sensors[3].getVoltage() + self.ir_sensors[4].getVoltage() + self.ir_sensors[5].getVoltage/3
-        #If the voltage of the ir sensors is above a threshold then return true
-        if(self.bottom_ds_reading >= self.bottom_threshold):
+        if(self.ir_sensors[3].getVoltage() >= self.top_threshold or self.ir_sensors[4].getVoltage() >= self.top_threshold or self.ir_sensors[5].getVoltage() >= self.top_threshold):
+            #If the voltage of the ir sensors is above a threshold then return true
             print "Bottom ir threshold exceeded"
             return True
         #If any of the bottom bumper sensors have been activated then return true
